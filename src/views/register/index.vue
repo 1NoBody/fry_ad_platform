@@ -2,19 +2,23 @@
     <el-dialog
         title="账号注册"
         :visible.sync=centerDialogVisible 
+        :show-close=false
         width="30%"
         center
         >
         <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+           <el-form-item label="账号" prop="account">
+                <el-input type="text" v-model="ruleForm.account" autocomplete="off"></el-input>
+            </el-form-item>
             <el-form-item label="密码" prop="pass">
                 <el-input type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="确认密码" prop="checkPass">
                 <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="年龄" prop="age">
+            <el-form-item label="验证码" prop="age">
                 <el-input id='age' v-model.number="ruleForm.age"></el-input>
-                <img width="80px" height="30px" src="http://www.frypt.com/public/index.php/user/verify" />
+                <img id='tp' width="80px" height="30px" src="http://www.frypt.com/public/index.php/user/verify" />
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
@@ -29,7 +33,7 @@
     data() {
       var checkAge = (rule, value, callback) => {
         if (!value) {
-          return callback(new Error('年龄不能为空'));
+          return callback(new Error('验证码不能为空'));
         }
         setTimeout(() => {
           if (!Number.isInteger(value)) {
@@ -42,6 +46,16 @@
             }
           }
         }, 1000);
+      };
+      var validateAccount = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请输入账号'));
+        }else {
+          if (this.ruleForm.account !== '') {
+            this.$refs.ruleForm.validateField('account');
+          }
+          callback();
+        }
       };
       var validatePass = (rule, value, callback) => {
         if (value === '') {
@@ -65,6 +79,7 @@
       return {
         centerDialogVisible: true,
         ruleForm: {
+          account:'',
           pass: '',
           checkPass: '',
           age: ''
@@ -76,9 +91,10 @@
           checkPass: [
             { validator: validatePass2, trigger: 'blur' }
           ],
-          age: [
-            { validator: checkAge, trigger: 'blur' }
-          ]
+          account: [
+            { validator: validateAccount, trigger: 'blur' }
+          ],
+          
         }
       };
     },
@@ -104,7 +120,16 @@
 <!-- 覆盖element ui属性 -->
 <style>
   .el-input #age{
-        width: 150px;
+        width: 160px;
+  }
+  #tp{
+    float: right;
+    margin-top: -35px;
+    
+  }
+  .el-form {
+    width: 350px;
+    
   }
 </style>
 
