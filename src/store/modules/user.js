@@ -1,4 +1,4 @@
-import { login, logout, getInfo } from '@/api/user'
+import { login, checkCaptcha, register, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
@@ -33,16 +33,43 @@ const actions = {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password }).then(response => {
-        const { data } = response
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
-        resolve()
+        //const { data } = response
+        //commit('SET_TOKEN', data.token)
+        //setToken(data.token)
+
+        // 使用假数据token
+        setToken('user_token');     
+        resolve(response) 
+        //resolve()
       }).catch(error => {
+        console.log(error);
         reject(error)
       })
     })
   },
-
+  // check captcha
+  checkCaptcha({ commit }, captcha) {
+    return new Promise((resolve, reject) => {
+      checkCaptcha(captcha.trim()).then(response => {    
+        resolve(response) 
+      }).catch(error => {
+        console.log(error);
+        reject(error)
+      })
+    })
+  },
+  // user register
+  register({ commit }, userInfo) {
+    const { username, password } = userInfo
+    return new Promise((resolve, reject) => {
+      register({ username: username.trim(), password: password }).then(response => {   
+        resolve(response) 
+      }).catch(error => {
+        console.log(error);
+        reject(error)
+      })
+    })
+  },
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {

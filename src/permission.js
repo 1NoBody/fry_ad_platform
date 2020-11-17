@@ -8,7 +8,7 @@ import getPageTitle from '@/utils/get-page-title'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
-const whiteList = ['/login'] // no redirect whitelist
+const whiteList = ['/login','/register'] // no redirect whitelist
 
 router.beforeEach(async(to, from, next) => {
   // start progress bar
@@ -26,6 +26,8 @@ router.beforeEach(async(to, from, next) => {
       next({ path: '/' })
       NProgress.done()
     } else {
+      next();
+      /* token存在cookie 暂不考虑获取用户信息 
       const hasGetUserInfo = store.getters.name
       if (hasGetUserInfo) {
         next()
@@ -43,6 +45,7 @@ router.beforeEach(async(to, from, next) => {
           NProgress.done()
         }
       }
+      */
     }
   } else {
     /* has no token*/

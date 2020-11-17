@@ -48,8 +48,64 @@
         <span> password: 123456</span>
       </div>
       <!-- 注册 -->
-      <el-button type="text" @click="register">注册账号</el-button>
+      <el-button type="text" @click="showRegister">注册账号</el-button>
+
+
+      <!-- <el-dialog
+        title="账号注册"
+        :visible.sync="centerDialogVisible"
+        width="30%"
+        center
+      >
+        <div class="container"> -->
+          <!-- 注册表单 -->
+          <!-- <el-form ref="registerForm" :model="registerForm" :rules="registerRules" class="login-form" auto-complete="on" label-position="left">
+            <el-form-item prop="username">
+              <span class="svg-container">
+                <svg-icon icon-class="user" />
+              </span>
+              <el-input
+                ref="username"
+                v-model="loginForm.username"
+                placeholder="Username"
+                name="username"
+                type="text"
+                tabindex="1"
+                auto-complete="on"
+              />
+            </el-form-item>
+          </el-form> -->
+      
+
+          <!-- <div class="input-c">
+            <label>账号:</label><input class="bk" placeholder="账号" />
+          </div>
+          <div class="input-c">
+            <label>密码:</label><input class="bk" placeholder="密码" />
+          </div>
+          <div class="input-c">
+            <label>确认密码:</label><input class="bk" placeholder="确认密码" />
+          </div>
+          <div class="input-c">
+            <label>验证码:</label><input class="bk1" placeholder="验证码" />
+            <div class="yzm"> -->
+              <!-- TD:刷新验证码 -->
+              <!-- <img width="80px" height="30px" src="http://www.frypt.com/public/index.php/user/verify" />
+            </div>
+          </div>
+        </div>
+
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="centerDialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="registerSubmit">提 交</el-button>
+        </span> -->
+        <!-- </div>
+      </el-dialog> -->
     </el-form>
+      <!-- <div> -->
+          <!-- 注册窗口 -->
+      <!-- <Register :isShow="centerDialogVisible" @hide="noShow"/> -->
+      <!-- </div> -->
   </div>
 </template>
 
@@ -57,7 +113,7 @@
 import { validUsername } from '@/utils/validate'
 import Message from 'element-ui'
 //import axios from 'axios'
-
+import Register from '@/views/register'
 
 export default {
   name: 'Login',
@@ -96,8 +152,10 @@ export default {
       loading: false,
       passwordType: 'password',
       redirect: undefined,
+      centerDialogVisible:  true//false
     }
   },
+  components:{Register},
   watch: {
     $route: {
       handler: function(route) {
@@ -117,8 +175,45 @@ export default {
         this.$refs.password.focus()
       })
     },
-    register: function(){
-      this.$router.push({ path: '/register' })
+    showRegister: function () {
+      //this.centerDialogVisible = true;
+      this.$router.push({ path: '/register' }) 
+    },
+    noShow: function(val){
+      this.centerDialogVisible = val;
+    },
+    registerSubmit: function(){
+      this.$refs.loginForm.validate(valid => {
+        if (valid) {
+          this.loading = true
+          this.$store.dispatch('user/login', this.loginForm).then((res) => {
+            // 登录逻辑
+            switch(res.code){
+              case 0:   //登录成功
+                //alert(res.msg);
+                // Message({
+                // message: res.msg,
+                // type: 'info',
+                // duration: 5 * 1000
+                // });
+                this.$router.push({ path: this.redirect || '/' }) 
+                break;
+              case 1:   //登录失败
+              case 2:   //用户未注册
+                alert(res.msg);
+                break;
+              default:
+                break;
+            }
+          }).catch(() => {
+            this.loading = false
+          })
+          this.loading = false
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
     },
     handleLogin() {  
       /* 自定义ajax请求

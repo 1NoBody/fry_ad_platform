@@ -2,7 +2,28 @@ import request from '@/utils/request'
 
 export function login(data) {
   return request({
-    url: '/vue-admin-template/user/login',
+    //url: '/vue-admin-template/user/login',
+    url: '/user/login',
+    method: 'post',
+    data
+  })
+}
+
+// 验证码校验
+export function checkCaptcha(captcha) {
+  return request({
+    url: '/user/verify',
+    method: 'get',
+    param: {
+      captcha
+    }
+  })
+}
+
+// 注册
+export function register(data) {
+  return request({
+    url: '/user/register',
     method: 'post',
     data
   })
