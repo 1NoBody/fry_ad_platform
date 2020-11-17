@@ -57,43 +57,9 @@
         >Login</el-button
       >
       <el-button type="text" @click="showRegiste">注册账号</el-button>
-      <el-dialog
-        title="账号注册"
-        :visible.sync="centerDialogVisible"
-        width="30%"
-        center
-      >
-        <div class="container" >
-          <div class="input-c">
-            
-            <label  prop="name">账号:</label><input class="bk"  placeholder="账号" />
-          </div>
-          <div class="input-c">
-            <label prop="pwd">密码:</label><input class="bk"  placeholder="密码" />
-          </div>
-          <div class="input-c">
-            <label  prop="checkpwd">确认密码:</label><input class="bk" placeholder="确认密码" />
-          </div>
-          <div class="input-c">
-            <label>验证码:</label><input class="bk1" placeholder="验证码" />
-            <div class="yzm">
-              <img width="80px" height="30px" src="@/assets/yzm.jpg" />
-            </div>
-          </div>
-        </div>
 
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="centerDialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="centerDialogVisible = false"
-            >提 交</el-button
-          >
-        </span>
-      </el-dialog>
-
-      <div class="tips">
-        <span style="margin-right: 20px">username: admin</span>
-        <span> password: 123456</span>
-      </div>
+    <Register :Visible="centerDialogVisible" @zf='func'/>
+      
     </el-form>
   </div>
 </template>
@@ -104,6 +70,7 @@
 <script>
 import { validUsername } from "@/utils/validate";
 //import request from '@/utils/request'
+import Register from '@/views/register';
 
 export default {
   name: "Login",
@@ -140,7 +107,9 @@ export default {
       redirect: undefined,
       centerDialogVisible: false,
     };
-     
+  },
+  components:{
+    Register
   },
   watch: {
     $route: {
@@ -150,12 +119,13 @@ export default {
       immediate: true,
     },
   },
-
   methods: {
     showRegiste: function () {
       this.centerDialogVisible = true;
     },
-    
+    func: function(val){
+      this.centerDialogVisible = val;
+    },
     showPwd() {
       if (this.passwordType === "password") {
         this.passwordType = "";
@@ -167,7 +137,25 @@ export default {
       });
     },
     handleLogin() {
-    
+      // this.$router.push({ path: this.redirect || '/' })
+      // this.$store.dispatch('user/login',{username:'ljx',password:'123456'}).then(res => {
+      //   // this.$router.push({ path: this.redirect || '/' })
+      //   // this.loading = false
+      //   alert(res);
+      //   console.log(res);
+      // });
+
+      // request({
+      //   url: "/user/login",
+      //   method: "post",
+      //   params: {
+      //     username: "ljx",
+      //     password: "123456",
+      //   }
+      // }).then(res => {
+      //   console.log(res);
+      // });
+
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
@@ -305,9 +293,6 @@ $light_gray: #eee;
   align-items: center;
 }
 .input-c {
-   display: flex;
-  justify-content: center;
-  align-items: center;
   margin: 10px;
 }
 .container label {

@@ -1,38 +1,13 @@
 <template>
   <div class="infor">
-    <div class="title">
+    <div class="bgn">
+      <div class="title">
         <h1>账号资料</h1>
       </div>
       <div class="bkn">
         <p>您的账户资料信息尚未完善，请先完善账户信息。</p>
       </div>
-    <el-form ref="form" :model="form" label-width="100px" :rules="rules">
-      <el-form-item label="企业名称:" prop="enterpriseName">
-        <el-input v-model="form.enterpriseName" placeholder="只能为字母和数字"></el-input>
-      </el-form-item> 
-       <el-form-item label="联系人姓名:" prop="contactName">
-        <el-input v-model="form.contactName" placeholder="只能为字母和数字"></el-input>
-      </el-form-item>
-       <el-form-item label="联系电话:" prop="contactPhone">
-        <el-input v-model="form.contactPhone" placeholder="只能为字母和数字"></el-input>
-      </el-form-item>
-       <el-form-item label="联系人邮箱:" prop="contactEmail">
-        <el-input v-model="form.contactEmail" placeholder="只能为字母和数字"></el-input>
-      </el-form-item>
-       <el-form-item label="微信:" prop="weChat">
-        <el-input v-model="form.weChat" placeholder="只能为字母和数字"></el-input>
-      </el-form-item>
-       <el-form-item label="QQ:" prop="qq">
-        <el-input v-model="form.qq" placeholder="只能为字母和数字"></el-input>
-      </el-form-item>
-       <el-form-item label="营业执照号:" prop="number">
-        <el-input v-model="form.number" placeholder="只能为字母和数字"></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="onSubmit('form')">提交</el-button>
-      </el-form-item>
-    </el-form>
-      <!-- <div class="inf">
+      <div class="inf">
         <label>
           企业名称:
         </label><input type="text" class="bk">
@@ -54,7 +29,7 @@
       </div>
       <div class="inf">
         <label>营业执照号:</label><input type="text" class="bk">
-      </div> -->
+      </div>
      <div class="inf">
         <div class="inf1">
           <label>上传营业执照:</label>
@@ -75,7 +50,7 @@
       <p>提交</p>
       </button>
       </div>
-    <!-- </div> -->
+    </div>
 </template>
 
 <style>
