@@ -58,7 +58,27 @@ export const constantRoutes = [
       meta: { title: 'Dashboard', icon: 'dashboard' }
     }]
   },
-
+  {
+    path: '/user',
+    component: Layout,
+    name: 'User',
+    meta: { title: '用户中心', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'modify_psw',
+        name: 'Modify_psw',
+        component: () => import('@/views/user/modify_psw/index'),
+        meta: { title: '修改密码', icon: 'table' }
+      },
+      {
+        path: 'company_auth',
+        name: 'Company_auth',
+        component: () => import('@/views/user/company_auth/index'),
+        meta: { title: '企业认证', icon: 'tree' }
+      }
+    ]
+  },
+/*
   {
     path: '/example',
     component: Layout,
@@ -163,7 +183,7 @@ export const constantRoutes = [
       }
     ]
   },
-
+*/
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]
