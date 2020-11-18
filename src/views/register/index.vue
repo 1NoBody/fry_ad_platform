@@ -24,7 +24,7 @@
             </el-form-item>
             <el-form-item id='button'>
                 <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
-                <el-button @click="resetForm('ruleForm')">取消</el-button>
+                <el-button @click="back">取消</el-button>
             </el-form-item>
         </el-form>
     </el-dialog>
@@ -41,13 +41,9 @@
       };
       var validateAccount = (rule, value, callback) => {
         if (value === '') {
-          callback(new Error('请输入账号'));
-        }else {
-          if (this.ruleForm.account !== '') {
-            this.$refs.ruleForm.validateField('account');
-          }
-          callback();
+          return callback(new Error('请输入账号'));
         }
+        callback();
       };
       var validatePass = (rule, value, callback) => {
         if (value === '') {
@@ -96,14 +92,18 @@
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            alert('submit!');
+              var data = {'username': this.ruleForm.account, 'password': this.ruleForm.checkPass};
+              this.$store.dispatch('user/register', data).then(res => {
+                  alert(res.msg)
+                  this.$router.push({path: '/login'});
+              })
           } else {
             console.log('error submit!!');
             return false;
           }
         });
       },
-      resetForm(formName) {
+      back() {
         //this.$refs[formName].resetFields();
         this.$router.push({ path: '/' }) 
       },
