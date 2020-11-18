@@ -4,9 +4,9 @@
         :visible.sync=centerDialogVisible 
         :show-close=false
         width="30%"
-        center
+        :center=true
         >
-        <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+        <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="70px" class="demo-ruleForm">
            <el-form-item label="账号" prop="account">
                 <el-input type="text" v-model="ruleForm.account" autocomplete="off"></el-input>
             </el-form-item>
@@ -16,11 +16,13 @@
             <el-form-item label="确认密码" prop="checkPass">
                 <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="验证码" prop="age">
-                <el-input id='age' v-model.number="ruleForm.age"></el-input>
-                <img id='tp' width="80px" height="30px" src="http://www.frypt.com/public/index.php/user/verify" />
+            <el-form-item label="验证码" prop="captcha">
+                <span>
+                    <el-input id='verify' v-model.number="ruleForm.verify" @blur="verify(ruleForm.verify)"></el-input>
+                    <img id='captcha' width='170px' src="http://www.frypt.com/public/index.php/user/verify"/> <!-- http://www.frypt.com/public/index.php/user/verify -->
+                </span>
             </el-form-item>
-            <el-form-item>
+            <el-form-item id='button'>
                 <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
                 <el-button @click="resetForm('ruleForm')">取消</el-button>
             </el-form-item>
@@ -31,21 +33,11 @@
 <script>
   export default {
     data() {
-      var checkAge = (rule, value, callback) => {
+      var validateCaptcha = (rule, value, callback) => {
         if (!value) {
           return callback(new Error('验证码不能为空'));
         }
-        setTimeout(() => {
-          if (!Number.isInteger(value)) {
-            callback(new Error('请输入数字值'));
-          } else {
-            if (value < 18) {
-              callback(new Error('必须年满18岁'));
-            } else {
-              callback();
-            }
-          }
-        }, 1000);
+        callback();
       };
       var validateAccount = (rule, value, callback) => {
         if (value === '') {
@@ -82,19 +74,21 @@
           account:'',
           pass: '',
           checkPass: '',
-          age: ''
+          verify: ''
         },
         rules: {
+          account: [
+            { validator: validateAccount, trigger: 'blur' }
+          ],
           pass: [
             { validator: validatePass, trigger: 'blur' }
           ],
           checkPass: [
             { validator: validatePass2, trigger: 'blur' }
           ],
-          account: [
-            { validator: validateAccount, trigger: 'blur' }
-          ],
-          
+          verify: [
+            { validator: validateCaptcha, trigger: 'blur' }
+          ]
         }
       };
     },
@@ -112,24 +106,39 @@
       resetForm(formName) {
         //this.$refs[formName].resetFields();
         this.$router.push({ path: '/' }) 
-      }
+      },
+      verify(captcha) {
+          this.$store.dispatch('user/checkCaptcha', captcha).then(res => {
+              alert(res.msg);
+          });
+      },
+    },
+    mounted() {
+        // TD:初始化验证码图片 
+        var captcha = '';
+        this.$store.dispatch('user/checkCaptcha', captcha).then(res => {
+        });
     }
   }
 </script>
 
 <!-- 覆盖element ui属性 -->
 <style>
-  .el-input #age{
+  #verify{
         width: 160px;
   }
-  #tp{
+  #captcha{
     float: right;
-    margin-top: -35px;
-    
+    margin-top: -45px;
   }
   .el-form {
-    width: 350px;
-    
+      margin-right: 50px;
+  }
+  #button{
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-around;
   }
 </style>
 

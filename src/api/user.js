@@ -14,7 +14,7 @@ export function checkCaptcha(captcha) {
   return request({
     url: '/user/verify',
     method: 'get',
-    param: {
+    params: {
       captcha
     }
   })
