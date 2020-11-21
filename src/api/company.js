@@ -1,5 +1,6 @@
 import request from '@/utils/request'
 
+/**提交企业认证资料 */
 export function auth(data) {
   return request({
     url: '/company/auth',
@@ -8,6 +9,7 @@ export function auth(data) {
   })
 }
 
+/**查询登记的企业信息 */
 export function findAll(data) {
   return request({
     url: '/company/findAll',
@@ -19,6 +21,7 @@ export function findAll(data) {
   })
 }
 
+/**企业详情 */
 export function findById(data) {
   return request({
     url: '/company/findById',
@@ -29,6 +32,7 @@ export function findById(data) {
   })
 }
 
+/**审核 */
 export function audit(data) {
   return request({
     url: '/company/audit',

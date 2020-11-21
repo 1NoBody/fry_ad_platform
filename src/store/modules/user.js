@@ -6,7 +6,8 @@ const getDefaultState = () => {
   return {
     token: getToken(),
     name: '',
-    role: 0,
+    user_id: 0,
+    role: 0, // 保存用户角色信息 0：普通用户 1：管理员
     avatar: ''
   }
 }
@@ -22,6 +23,9 @@ const mutations = {
   },
   SET_NAME: (state, name) => {
     state.name = name
+  },
+  SET_ID: (state, user_id) => {
+    state.user_id = user_id
   },
   SET_ROLES: (state, role) => {
     state.role = role
@@ -45,6 +49,7 @@ const actions = {
         commit('SET_TOKEN', 'user_token')
         setToken('user_token');  
         commit('SET_NAME', response.username)
+        commit('SET_ID', response.user_id)
         commit('SET_ROLES', response.role)   
         resolve(response) 
         //resolve()

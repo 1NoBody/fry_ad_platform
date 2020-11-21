@@ -1,27 +1,19 @@
 <template>
-
-<div class="dialog">
-<el-dialog
- 
-  :visible.sync="centerDialogVisible"
-  :close-on-click-modal=false
-  width="20%"
-  center>
- <div class="infor">
+<div class="bk">
+<div class="changepsw">
 <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
   <el-form-item label="新密码" prop="pass">
-    <el-input type="password" v-model="ruleForm.pass" autocomplete="off" show-password></el-input>
+    <el-input type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
   </el-form-item>
   <el-form-item label="确认密码" prop="checkPass">
-    <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off" show-password></el-input>
+    <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
   </el-form-item>
-  <el-form-item>
-    <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
+  <el-form-item id='btn'>
+    <el-button type="primary" @click="submitForm('ruleForm')">确定</el-button>
     <el-button @click="resetForm('ruleForm')">重置</el-button>
   </el-form-item>
 </el-form>
 </div>
-</el-dialog>
 </div>
 </template>
 <script>
@@ -47,7 +39,6 @@
         }
       };
       return {
-        centerDialogVisible:true,
         ruleForm: {
           pass: '',
           checkPass: '',
@@ -59,8 +50,7 @@
           ],
           checkPass: [
             { validator: validatePass2, trigger: 'blur' }
-          ],
-         
+          ],     
         }
       };
     },
@@ -91,15 +81,30 @@
   }
 </script>
 
-<style>
- .dialog{
-      height: 300px;
-    }
-    .infor{
-        width: 300px;
-        height: 230px;
+<style scoped>
+    .bk{
+      height: 800px;
         display: flex;
         justify-content: center;
         align-items: center;
-    } 
+    }
+    .changepsw{
+      border: 1px solid gainsboro;
+      width: 400px;
+      height: 300px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        
+    }
+    .demo-ruleForm{
+      display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin-right: 50px;
+    }
+    #btn{
+      margin-right: 60px;
+    }
 </style>

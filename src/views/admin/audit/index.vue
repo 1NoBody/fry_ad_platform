@@ -74,7 +74,7 @@ export default {
   methods: {
     handleClick(id) {
       //console.log(id);
-      this.$router.push({ path: '/user/company_auth/'+id})
+      this.$router.push({ path: '/user/company_auth/'+id})  // TD:直接访问带后缀 :id
     },
     resetForm() {
       this.centerDialogVisible = false
@@ -101,7 +101,7 @@ export default {
       operate_id:0,
       centerDialogVisible: false,
       pageInfo:{
-        num: 2,
+        num: 10,
         page: 1,
         total: 0
       },
@@ -125,7 +125,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .infor {
   height: 800px;
   display: flex;
@@ -147,6 +147,5 @@ export default {
 }
 .btn{
     margin-right: 80px;
-  
 }
 </style>

@@ -1,18 +1,27 @@
 <template>
-    
-<div class="changepsw">
+
+<div class="dialog">
+<el-dialog
+ 
+  :visible.sync="centerDialogVisible"
+  :close-on-click-modal=false
+  width="20%"
+  center>
+ <div class="infor">
 <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
   <el-form-item label="新密码" prop="pass">
-    <el-input type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
+    <el-input type="password" v-model="ruleForm.pass" autocomplete="off" show-password></el-input>
   </el-form-item>
   <el-form-item label="确认密码" prop="checkPass">
-    <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
+    <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off" show-password></el-input>
   </el-form-item>
   <el-form-item>
     <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
     <el-button @click="resetForm('ruleForm')">重置</el-button>
   </el-form-item>
 </el-form>
+</div>
+</el-dialog>
 </div>
 </template>
 <script>
@@ -38,6 +47,7 @@
         }
       };
       return {
+        centerDialogVisible:true,
         ruleForm: {
           pass: '',
           checkPass: '',
@@ -58,7 +68,16 @@
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            alert('submit!');
+            //alert('submit!');
+            this.$store.dispatch('user/changepsw', this.ruleForm.checkPass).then(res => {
+              alert(res.msg)
+              if(res.code == 1){
+                // 失败
+              }else{
+                // 成功
+                this.$router.push({path: '/login'});
+              }     
+            });
           } else {
             console.log('error submit!!');
             return false;
@@ -72,11 +91,15 @@
   }
 </script>
 
-<style scoped>
-    .changepsw{
-        height: 800px;
+<style>
+ .dialog{
+      height: 300px;
+    }
+    .infor{
+        width: 300px;
+        height: 230px;
         display: flex;
         justify-content: center;
         align-items: center;
-    }
+    } 
 </style>

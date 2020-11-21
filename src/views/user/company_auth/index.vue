@@ -22,7 +22,6 @@
     <el-input v-model="ruleForm.number"></el-input>
   </el-form-item>
   <el-form-item label="上传营业执照" prop="picture">
-      <!-- :on-success="handleAvatarSuccess"  -->
     <el-upload
           class="avatar-uploader"
           action="http://www.frypt.com/public/index.php/other/uploadimg"
@@ -43,6 +42,8 @@
 </template>
 
 <script>
+import store from '@/store'
+
   export default {
     data() {
       return {
@@ -83,7 +84,6 @@
             { required: true, message: '请输入营业执照号', trigger: 'blur' },
             // { min: 5, max: 11, message: '长度在 5 到 11 个字符', trigger: 'blur' }
           ],
-         
         }
       };
     },
@@ -92,7 +92,7 @@
         this.$refs[formName].validate((valid) => {
           if (valid) {
             this.$store.dispatch('company/auth', this.ruleForm).then(res => {
-                
+                alert(res.msg);
             });
             this
           } else {
@@ -129,6 +129,7 @@
         return isJPG && isLt2M;
       },
       upload() {
+          // 延时控制
           setTimeout(() => {
             this.$store.dispatch('other/uploadImg', this.imageUrl).then(res => {
                 if(res.code == 0) {
@@ -141,31 +142,26 @@
       }
     },
     mounted() {
-      if(this.$route.params.id){
-        this.$store.dispatch('company/findById',this.$route.params.id).then((res) => {
-          if(res.code == 0 && res.data != null){
-            this.ruleForm.company = res.data.company;
-            this.ruleForm.lxrname = res.data.name;
-            this.ruleForm.lxrphone = res.data.telephone;
-            this.ruleForm.lxremail = res.data.email;
-            this.ruleForm.wechat = res.data.vx;
-            this.ruleForm.number = res.data.license;
-            this.ruleForm.img_url = res.data.license_img;
-            // 显示图片
-            this.imageUrl = res.data.license_img;
-            // 提示语
-            this.text = res.data.reason;
-          }
-        })
-    }
-    else{
-      alert('kkk')
-    }
+      this.$store.dispatch('company/findById',this.$route.params.id > 0 ? this.$route.params.id : store.getters.user_id ).then((res) => {
+        if(res.code == 0 && res.data != null){
+          this.ruleForm.company = res.data.company;
+          this.ruleForm.lxrname = res.data.name;
+          this.ruleForm.lxrphone = res.data.telephone;
+          this.ruleForm.lxremail = res.data.email;
+          this.ruleForm.wechat = res.data.vx;
+          this.ruleForm.number = res.data.license;
+          this.ruleForm.img_url = res.data.license_img;
+          // 显示图片
+          this.imageUrl = res.data.license_img;
+          // 提示语
+          this.text = "提示信息：" + res.data.reason;
+        }
+      })
   }
 }
 </script>
 
-<style>
+<style scoped>
   .avatar-uploader .el-upload {
     border: 1px dashed #d9d9d9;
     border-radius: 6px;
@@ -189,9 +185,7 @@
     height: 178px;
     display: block;
   }
-</style>
-
-<style>
+    /* 自定义 */
     .el-form-item{
         width: 600px;
         margin:30px auto;
