@@ -1,4 +1,4 @@
-import { login, checkCaptcha, register, logout, getInfo } from '@/api/user'
+import { login, checkCaptcha, register, changepsw, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
@@ -6,6 +6,7 @@ const getDefaultState = () => {
   return {
     token: getToken(),
     name: '',
+    role: 0,
     avatar: ''
   }
 }
@@ -21,6 +22,9 @@ const mutations = {
   },
   SET_NAME: (state, name) => {
     state.name = name
+  },
+  SET_ROLES: (state, role) => {
+    state.role = role
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
@@ -38,7 +42,10 @@ const actions = {
         //setToken(data.token)
 
         // 使用假数据token
-        setToken('user_token');     
+        commit('SET_TOKEN', 'user_token')
+        setToken('user_token');  
+        commit('SET_NAME', response.username)
+        commit('SET_ROLES', response.role)   
         resolve(response) 
         //resolve()
       }).catch(error => {
@@ -63,6 +70,17 @@ const actions = {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
       register({ username: username.trim(), password: password }).then(response => {   
+        resolve(response) 
+      }).catch(error => {
+        console.log(error);
+        reject(error)
+      })
+    })
+  },
+  // user changepsw
+  changepsw({ commit }, newpsw) {
+    return new Promise((resolve, reject) => {
+      changepsw({ password: newpsw }).then(response => {   
         resolve(response) 
       }).catch(error => {
         console.log(error);

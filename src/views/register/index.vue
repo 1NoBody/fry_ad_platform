@@ -5,6 +5,7 @@
         :show-close=false
         width="30%"
         :center=true
+        :close-on-click-modal=false
         >
         <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="70px" class="demo-ruleForm">
            <el-form-item label="账号" prop="account">
@@ -19,7 +20,7 @@
             <el-form-item label="验证码" prop="captcha">
                 <span>
                     <el-input id='verify' v-model.number="ruleForm.verify" @blur="verify(ruleForm.verify)"></el-input>
-                    <img id='captcha' width='170px' src="http://www.frypt.com/public/index.php/user/verify"/> <!-- http://www.frypt.com/public/index.php/user/verify -->
+                    <img id='captcha' width='170px' src="http://www.frypt.com/public/index.php/user/verify"/> 
                 </span>
             </el-form-item>
             <el-form-item id='button'>
@@ -48,7 +49,11 @@
       var validatePass = (rule, value, callback) => {
         if (value === '') {
           callback(new Error('请输入密码'));
-        } else {
+        } 
+        if (value.length < 6) {    
+          callback(new Error('密码长度不能小于6位数'))
+        }
+        else {
           if (this.ruleForm.checkPass !== '') {
             this.$refs.ruleForm.validateField('checkPass');
           }
@@ -114,10 +119,7 @@
       },
     },
     mounted() {
-        // TD:初始化验证码图片 
-        var captcha = '';
-        this.$store.dispatch('user/checkCaptcha', captcha).then(res => {
-        });
+
     }
   }
 </script>
@@ -125,7 +127,7 @@
 <!-- 覆盖element ui属性 -->
 <style>
   #verify{
-        width: 160px;
+    width: 160px;
   }
   #captcha{
     float: right;

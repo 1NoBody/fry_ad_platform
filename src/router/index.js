@@ -71,10 +71,25 @@ export const constantRoutes = [
         meta: { title: '修改密码', icon: 'table' }
       },
       {
-        path: 'company_auth',
+        path: 'company_auth/:id',
         name: 'Company_auth',
+        props: true,
         component: () => import('@/views/user/company_auth/index'),
         meta: { title: '企业认证', icon: 'tree' }
+      }
+    ]
+  },
+  {
+    path: '/admin',
+    component: Layout,
+    name: 'Admin',
+    meta: { title: '后台管理', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'audit',
+        name: 'Audit',
+        component: () => import('@/views/admin/audit/index'),
+        meta: { title: '企业审核', icon: 'tree' }
       }
     ]
   },

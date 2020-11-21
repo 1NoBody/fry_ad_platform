@@ -24,8 +24,15 @@ router.beforeEach(async(to, from, next) => {
     if (to.path === '/login') {
       // if is logged in, redirect to the home page
       next({ path: '/' })
-      NProgress.done()
+      NProgress.done() //进度条
     } else {
+      //alert(store.getters.role);
+      // var adminUrl = ['admin/audit'];
+      // if((to in adminUrl) && store.getters.role != 1){
+      //   next(from.path)
+      // }else{
+      //   next();
+      // }
       next();
       /* token存在cookie 暂不考虑获取用户信息 
       const hasGetUserInfo = store.getters.name

@@ -29,6 +29,15 @@ export function register(data) {
   })
 }
 
+// 修改密码
+export function changepsw(data) {
+  return request({
+    url: '/user/changePsw',
+    method: 'post',
+    data
+  })
+}
+
 export function getInfo(token) {
   return request({
     url: '/vue-admin-template/user/info',
@@ -39,7 +48,7 @@ export function getInfo(token) {
 
 export function logout() {
   return request({
-    url: '/vue-admin-template/user/logout',
-    method: 'post'
+    url: '/user/logout',
+    method: 'get'
   })
 }

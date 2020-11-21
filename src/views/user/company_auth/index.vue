@@ -1,11 +1,10 @@
 <template>
-
 <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-  <div class="bkn">
-        <p>您的账户资料信息尚未完善，请先完善账户信息。</p>
-      </div>
-  <el-form-item label="企业名称" prop="name">
-    <el-input v-model="ruleForm.name"></el-input>
+  <div class="tip">
+    <p v-model="text">{{text}}</p>
+  </div>
+  <el-form-item label="企业名称" prop="company">
+    <el-input v-model="ruleForm.company"></el-input>
   </el-form-item>
    <el-form-item label="联系人名字" prop="lxrname">
     <el-input v-model="ruleForm.lxrname"></el-input>
@@ -23,46 +22,49 @@
     <el-input v-model="ruleForm.number"></el-input>
   </el-form-item>
   <el-form-item label="上传营业执照" prop="picture">
-   <el-upload
+      <!-- :on-success="handleAvatarSuccess"  -->
+    <el-upload
           class="avatar-uploader"
           action="http://www.frypt.com/public/index.php/other/uploadimg"
-          :show-file-list="false"
-          :on-success="handleAvatarSuccess"
+          :show-file-list="false" 
           :before-upload="beforeAvatarUpload"
-          v-model="ruleForm.picture"
+          :http-request="upload"
+          :auto-upload="true"
           >
-  <img v-if="imageUrl" :src="imageUrl" class="avatar">
-  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-</el-upload>
+        <img v-if="imageUrl" :src="imageUrl" class="avatar">
+        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+    </el-upload>
   </el-form-item>
-  <el-form-item id="btn">
-    <el-button id="btn1" type="primary" @click="submitForm('ruleForm')">提交</el-button>
-    <!-- <el-button id="btn2" @click="resetForm('ruleForm')">重置</el-button> -->
+  <el-form-item id="el_btn">
+        <el-button id="btn" type="primary" @click="submitForm('ruleForm')">提交</el-button>
+        <!-- <el-button id="btn2" @click="resetForm('ruleForm')">重置</el-button> -->
   </el-form-item>
 </el-form>
 </template>
+
 <script>
   export default {
     data() {
       return {
         imageUrl: '',
+        text: '您的账户资料信息尚未完善，请先完善账户信息。',
         ruleForm: {
-          name: '',
+          company: '',
           lxrname:'',
           lxrphone:'',
           lxremail:'',
           wechat:'',
           number:'',
-          picture:'',
+          img_url:'',
         },
         rules: {
-          name: [
+          company: [
             { required: true, message: '请输入企业名称', trigger: 'blur' },
-            { min: 5, max: 11, message: '长度在 5 到 11 个字符', trigger: 'blur' }
+            // { min: 5, max: 11, message: '长度在 5 到 11 个字符', trigger: 'blur' }
           ],
            lxrname: [
             { required: true, message: '请输入联系人名字', trigger: 'blur' },
-            { min: 5, max: 11, message: '长度在 5 到 11 个字符', trigger: 'blur' }
+            // { min: 5, max: 11, message: '长度在 5 到 11 个字符', trigger: 'blur' }
           ],
           lxrphone: [
             { required: true, message: '请输入联系人电话', trigger: 'blur' },
@@ -75,11 +77,11 @@
           ],
           wechat: [
             { required: true, message: '请输入微信', trigger: 'blur' },
-            { min: 5, max: 11, message: '长度在 5 到 11 个字符', trigger: 'blur' }
+            // { min: 5, max: 11, message: '长度在 5 到 11 个字符', trigger: 'blur' }
           ],
           number: [
             { required: true, message: '请输入营业执照号', trigger: 'blur' },
-            { min: 5, max: 11, message: '长度在 5 到 11 个字符', trigger: 'blur' }
+            // { min: 5, max: 11, message: '长度在 5 到 11 个字符', trigger: 'blur' }
           ],
          
         }
@@ -89,7 +91,10 @@
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            alert('submit!');
+            this.$store.dispatch('company/auth', this.ruleForm).then(res => {
+                
+            });
+            this
           } else {
             console.log('error submit!!');
             return false;
@@ -108,14 +113,56 @@
 
         if (!isJPG) {
           this.$message.error('上传头像图片只能是 JPG 格式!');
+          return false;
         }
         if (!isLt2M) {
           this.$message.error('上传头像图片大小不能超过 2MB!');
+          return false;
+        }
+        var This = this;
+        var reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function(e){
+           // alert(this.result); //base64编码
+            This.imageUrl = this.result;
         }
         return isJPG && isLt2M;
+      },
+      upload() {
+          setTimeout(() => {
+            this.$store.dispatch('other/uploadImg', this.imageUrl).then(res => {
+                if(res.code == 0) {
+                    this.img_url = res.img_url;
+                }else if(res.code == 1) {
+                    this.$message.error(res.msg);
+                }
+            });
+          }, 200);
       }
     },
+    mounted() {
+      if(this.$route.params.id){
+        this.$store.dispatch('company/findById',this.$route.params.id).then((res) => {
+          if(res.code == 0 && res.data != null){
+            this.ruleForm.company = res.data.company;
+            this.ruleForm.lxrname = res.data.name;
+            this.ruleForm.lxrphone = res.data.telephone;
+            this.ruleForm.lxremail = res.data.email;
+            this.ruleForm.wechat = res.data.vx;
+            this.ruleForm.number = res.data.license;
+            this.ruleForm.img_url = res.data.license_img;
+            // 显示图片
+            this.imageUrl = res.data.license_img;
+            // 提示语
+            this.text = res.data.reason;
+          }
+        })
+    }
+    else{
+      alert('kkk')
+    }
   }
+}
 </script>
 
 <style>
@@ -145,34 +192,28 @@
 </style>
 
 <style>
-
-    /* .el-form{
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    } */
     .el-form-item{
         width: 600px;
         margin:30px auto;
         
     }
-    #btn{
-       display: flex;
-      justify-content: center;
-      align-items: center;
+    #el_btn{
+        display: flex;
+        justify-content: center;
+        align-items: center;
       
     }
-    #btn1{
+    #btn{
       margin-right: 100px;
       width: 200px;
     }
-    .bkn{
+    .tip{
       width: 600px;
       height: 80px;
       border: 1px solid gainsboro;
       margin: 20px auto;
     }
-    .bkn p{
+    .tip p{
       color: red;
       margin: 20px;
     }
