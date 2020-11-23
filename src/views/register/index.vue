@@ -17,11 +17,11 @@
             <el-form-item label="确认密码" prop="checkPass">
                 <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="验证码" prop="captcha">
-                <span>
-                    <el-input id='verify' v-model.number="ruleForm.verify" @blur="verify(ruleForm.verify)"></el-input>
-                    <img id='captcha' width='170px' src="http://www.frypt.com/public/index.php/user/verify"/> 
-                </span>
+            <el-form-item label="验证码" prop="captcha">           
+              <el-input id='verify' v-model="ruleForm.verify" @blur="verify(ruleForm.verify)" :disabled="isDisabled"></el-input>
+              <span @click="flush">
+                <img id='captcha' width='170px' :src="imgUrl" /> 
+              </span>
             </el-form-item>
             <el-form-item id='button'>
                 <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
@@ -71,6 +71,8 @@
       };
       return {
         centerDialogVisible: true,
+        imgUrl:'http://www.frypt.com/public/index.php/user/verify?time=' + Date.now(),
+        isDisabled: false, // 验证成功后禁用输入框
         ruleForm: {
           account:'',
           pass: '',
@@ -97,11 +99,13 @@
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-              var data = {'username': this.ruleForm.account, 'password': this.ruleForm.checkPass};
-              this.$store.dispatch('user/register', data).then(res => {
+              if(this.isDisabled){  // 验证码校验通过
+                var data = {'username': this.ruleForm.account, 'password': this.ruleForm.checkPass};
+                this.$store.dispatch('user/register', data).then(res => {
                   alert(res.msg)
                   this.$router.push({path: '/login'});
-              })
+                })
+              }         
           } else {
             console.log('error submit!!');
             return false;
@@ -114,9 +118,16 @@
       },
       verify(captcha) {
           this.$store.dispatch('user/checkCaptcha', captcha).then(res => {
-              alert(res.msg);
+              //alert(res.msg);
+              if(res.code == 0){
+                this.isDisabled = true;
+              }
           });
       },
+      flush() {
+        this.imgUrl = 'http://www.frypt.com/public/index.php/user/verify?time=' + Date.now();
+        this.isDisabled = false;
+      }
     },
   }
 </script>
